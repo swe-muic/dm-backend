@@ -19,6 +19,7 @@ repos:
           - flake8-annotations
           - flake8-docstrings
         args: ["--max-line-length=120"]
+        exclude: ^.*\/migrations\/.*
   - repo: https://github.com/psf/black
     rev: 22.6.0
     hooks:

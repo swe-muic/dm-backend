@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 import sys
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "dm_backend",
 ]
 
 MIDDLEWARE = [
@@ -79,12 +82,18 @@ WSGI_APPLICATION = "dm_backend.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(dotenv_path=dotenv_path)
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": os.getenv("POSTGRES_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.getenv("POSTGRES_DB", "postgres_db"),
+        "USER": os.getenv("POSTGRES_USER", "user"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "password"),
+        "HOST": os.getenv("POSTGRES_HOST", "127.0.0.1"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+    },
 }
 
 
