@@ -21,7 +21,7 @@ class Equation(models.Model):
     parsed_equation = models.CharField(max_length=100)
     color = models.IntegerField()
     line_style = models.CharField(
-        max_length=5, choices=LineStyle.choices(), default=LineStyle.SOLID
+        max_length=5, choices=LineStyle.choices(), default=LineStyle.SOLID.value
     )
     graph = models.ForeignKey("Graph", on_delete=models.CASCADE)
     line_width = models.IntegerField()
