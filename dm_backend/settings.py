@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_jwt",
+    "dm_backend",
 ]
 
 MIDDLEWARE = [
@@ -76,7 +79,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "dm_backend.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -90,6 +92,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'dm_backend.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
