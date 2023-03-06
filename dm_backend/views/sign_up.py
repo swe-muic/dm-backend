@@ -20,6 +20,4 @@ class SignUpView(generics.CreateAPIView):
         payload = jwt_payload_handler(user)
         token = jwt_encode_handler(payload)
 
-        test = "sagnksanklbmlksanklbnklsnannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
-
         return Response({'token': token}, status=status.HTTP_201_CREATED)
