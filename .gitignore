@@ -1,0 +1,6 @@
+dm_backend/.env
+**/__pycache__/
+**/.DS_Store/
+**/.idea/
+
+db/

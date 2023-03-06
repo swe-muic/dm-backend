@@ -101,6 +101,25 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
+name = "psycopg2-binary"
+version = "2.9.5"
+description = "psycopg2 - Python-PostgreSQL Database Adapter"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
+name = "python-dotenv"
+version = "1.0.0"
+description = "Read key-value pairs from a .env file and set them as environment variables"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.extras]
+cli = ["click (>=5.0)"]
+
+[[package]]
 name = "pyyaml"
 version = "6.0"
 description = "YAML parser and emitter for Python"
@@ -144,7 +163,7 @@ test = ["covdefaults (>=2.2.2)", "coverage-enable-subprocess (>=1)", "coverage (
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "98357a41a5b834676cc7ca4b12d02b701f963ffdda3bc9133e8f996d29d1dd95"
+content-hash = "0bcc7f30634dc0218f7add2fbff6bb641b516be25458ec9e296ec1a8e4866ceb"
 
 [metadata.files]
 asgiref = []
@@ -156,6 +175,8 @@ identify = []
 nodeenv = []
 platformdirs = []
 pre-commit = []
+psycopg2-binary = []
+python-dotenv = []
 pyyaml = []
 sqlparse = []
 tzdata = []
