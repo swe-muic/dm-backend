@@ -19,11 +19,11 @@ from dotenv import load_dotenv
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MIGRATIONS_DIR = os.path.join(BASE_DIR, "migrations")
-MODELS_DIR = os.path.join(BASE_DIR, "models")
-DATACLASSES_DIR = os.path.join(BASE_DIR, "dataclasses")
-SERIALIZERS_DIR = os.path.join(BASE_DIR, "serializers")
-VIEWS_DIR = os.path.join(BASE_DIR, "views")
-SERVICES_DIR = os.path.join(BASE_DIR, "services")
+MODELS_DIR = os.path.join(BASE_DIR, "src/models")
+DATACLASSES_DIR = os.path.join(BASE_DIR, "src/dataclasses")
+SERIALIZERS_DIR = os.path.join(BASE_DIR, "src/serializers")
+VIEWS_DIR = os.path.join(BASE_DIR, "src/views")
+SERVICES_DIR = os.path.join(BASE_DIR, "src/services")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/

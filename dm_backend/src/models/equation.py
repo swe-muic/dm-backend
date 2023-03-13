@@ -2,7 +2,7 @@
 
 from django.db import models
 
-from dm_backend.enums.line_style_type import LineStyle
+from dm_backend.src.enums.line_style_type import LineStyle
 
 
 class Equation(models.Model):
