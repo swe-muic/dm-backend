@@ -10,8 +10,10 @@ class LineStyle(Enum):
     Represented by string of line style representation
     """
 
-    SOLID = "polyline"
-    DOTTED = "scatter"
+    SOLID = "-"
+    DASHED = "--"
+    DOTTED = ":"
+    DASH_DOT = "-."
 
     @classmethod
     def choices(cls: Enum) -> List[Tuple[str, str]]:
