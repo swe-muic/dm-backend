@@ -4,7 +4,7 @@ import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
 
-import dm_backend.enums.line_style_type
+import dm_backend.src.enums.line_style_type
 
 
 class Migration(migrations.Migration):
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                             (":", "DOTTED"),
                             ("-.", "DASH_DOT"),
                         ],
-                        default=dm_backend.enums.line_style_type.LineStyle["SOLID"],
+                        default=dm_backend.src.enums.line_style_type.LineStyle["SOLID"],
                         max_length=5,
                     ),
                 ),
