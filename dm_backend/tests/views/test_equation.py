@@ -19,7 +19,7 @@ class EquationAPITest(TestCase):
             "color": 1,
             "line_style": "-",
             "line_width": 1,
-            "graph": 5,
+            "graph": self.graph.id,
         }
 
     def test_create_equation(self):
@@ -30,25 +30,25 @@ class EquationAPITest(TestCase):
         self.assertEqual(equation.equation, self.valid_payload["equation"])
 
     def test_create_invalid_equation(self):
-        data = self.valid_payload | {"equation": "", "graph": self.graph.id}
+        data = self.valid_payload | {"equation": ""}
         response = self.client.post(self.create_url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_equation(self):
         equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
-        data = self.valid_payload | {"equation": "3x - 5 = 0", "graph": self.graph.id}
+        data = self.valid_payload | {"equation": "3x - 5 = 0"}
         response = self.client.put(self.update_url(equation.id), data)
         equation = Equation.objects.filter(id=equation.id).first()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(equation.equation, data["equation"])
 
     def test_update_nonexistent_equation(self):
-        data = self.valid_payload | {"equation": "3x - 5 = 0", "graph": self.graph.id}
+        data = self.valid_payload | {"equation": "3x - 5 = 0"}
         response = self.client.put(self.update_url(999), data)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_invalid_equation(self):
         equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
-        data = self.valid_payload | {"equation": "", "graph": self.graph.id}
+        data = self.valid_payload | {"equation": ""}
         response = self.client.put(self.update_url(equation.id), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
