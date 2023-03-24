@@ -1,7 +1,8 @@
 """
 GraphAPI is a view that creates a new graph with the specified data.
 
-The view accepts POST, PUT and DELETE requests with graph data in the request body.
+The view accepts GET, POST, PUT and DELETE requests with graph data in the request body.
+- With GET request, all the graphs in the database are fetched and returned as a list of graph objects.
 - With POST request, the graph data is validated using the GraphSerializer, and if valid, a new graph object is
   created and saved to the database.
 - With PUT request, the graph with the specified graph_id will be updated according to the new graph data.
@@ -20,6 +21,26 @@ from ..serializers.graph import GraphSerializer
 
 class GraphAPI(APIView):
     """A class used to represent a view for graph."""
+
+    def get(self, request: Request) -> Response:
+        """
+        Fetch all graphs and return a JSON response with http status.
+
+        Args:
+            request (Request): A request containing the graph data.
+
+        Returns:
+            Response: A Response object containing a list of graphs or details for error.
+        """
+        try:
+            graphs = Graph.objects.all()
+            serializer = GraphSerializer(graphs, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"detail": f"Internal server error - {e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     def post(self, request: Request) -> Response:
         """
