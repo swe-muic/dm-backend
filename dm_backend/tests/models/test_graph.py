@@ -15,3 +15,8 @@ class TestGraph(TestCase):
         owner = user_recipe.make(username=owner_name)
         graph = graph_recipe.make(owner=owner)
         self.assertEqual(graph.owner.username, owner_name)
+
+    def test_create_graph_with_preview(self):
+        preview = "preview_minio_bucket_name"
+        graph = graph_recipe.make(preview=preview)
+        self.assertEqual(graph.preview, preview)
