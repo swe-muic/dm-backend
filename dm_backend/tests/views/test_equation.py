@@ -12,6 +12,7 @@ class EquationAPITest(TestCase):
         self.client = APIClient()
         self.create_url = "/api/equations/"
         self.update_url = lambda equation_id: f"/api/equations/{equation_id}/"
+        self.delete_url = lambda equation_id: f"/api/equations/{equation_id}/"
         self.graph = graph_recipe.make(name="test_graph")
         self.valid_payload = {
             "equation": "2x + 3 = 0",
@@ -52,3 +53,14 @@ class EquationAPITest(TestCase):
         data = self.valid_payload | {"equation": ""}
         response = self.client.put(self.update_url(equation.id), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_equation(self):
+        equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
+        response = self.client.delete(self.delete_url(equation.id))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Equation.objects.filter(id=equation.id).exists())
+
+    def test_delete_nonexistent_equation(self):
+        response = self.client.delete(self.delete_url(999))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue("does not exist" in response.json()["detail"])
