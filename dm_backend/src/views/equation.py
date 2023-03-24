@@ -74,3 +74,29 @@ class EquationAPI(APIView):
                 {"detail": f"Internal server error - {e}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+    def delete(self, request: Request, equation_id: int) -> Response:
+        """
+        Delete an existing equation with the specified equation_id and return JSON response with http status.
+
+        Args:
+            request (Request): A request containing the equation data.
+            equation_id (int): The id of an existing equation.
+
+        Returns:
+            Response: A Response object containing the deleted equation or details for error.
+        """
+        try:
+            equation = Equation.objects.get(id=equation_id)
+            equation.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Equation.DoesNotExist:
+            return Response(
+                {"detail": f"Equation with id {equation_id} does not exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {"detail": f"Internal server error - {e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
