@@ -32,3 +32,4 @@ class EquationSerializer(serializers.ModelSerializer):
             "line_width",
             "graph",
         ]
+        read_only_fields = ["id"]
