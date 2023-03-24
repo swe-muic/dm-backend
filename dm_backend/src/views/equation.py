@@ -1,7 +1,8 @@
 """
 EquationAPI is a view that creates a new equation with the specified data.
 
-The view accepts POST, PUT and DELETE requests with equation data in the request body.
+The view accepts GET, POST, PUT and DELETE requests with equation data in the request body.
+- With GET request, all the equations in the database are fetched and returned as a list of equation objects.
 - With POST request, the equation data is validated using the EquationSerializer, and if valid, a new equation object is
   created and saved to the database.
 - With PUT request, the equation with the specified equation_id will be updated according to the new equation data.
@@ -20,6 +21,26 @@ from ..serializers.equation import EquationSerializer
 
 class EquationAPI(APIView):
     """A class used to represent a view for equation."""
+
+    def get(self, request: Request) -> Response:
+        """
+        Fetch all equations and return a JSON response with http status.
+
+        Args:
+            request (Request): A request containing the equation data.
+
+        Returns:
+            Response: A Response object containing a list of equations or details for error.
+        """
+        try:
+            equations = Equation.objects.all()
+            serializer = EquationSerializer(equations, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"detail": f"Internal server error - {e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     def post(self, request: Request) -> Response:
         """
