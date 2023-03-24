@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -10,6 +12,7 @@ from dm_backend.tests.baker_recipes.user_baker_recipe import user_recipe
 class GraphAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
+        self.get_url = "/api/graphs/"
         self.create_url = "/api/graphs/"
         self.update_url = lambda graph_id: f"/api/graphs/{graph_id}/"
         self.delete_url = lambda graph_id: f"/api/graphs/{graph_id}/"
@@ -18,6 +21,30 @@ class GraphAPITest(TestCase):
             "name": "test_graph",
             "owner": self.owner.id,
         }
+
+    def test_get_graphs_empty(self):
+        response = self.client.get(self.get_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    def test_get_graphs(self):
+        graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
+        response = self.client.get(self.get_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["id"], graph.id)
+
+    def test_get_graphs_internal_server_error(self):
+        with patch("dm_backend.src.views.graph.Graph.objects.all") as mock_query:
+            mock_query.side_effect = Exception("Something went wrong")
+            response = self.client.get(self.get_url)
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            self.assertEqual(
+                response.data,
+                {"detail": "Internal server error - Something went wrong"},
+            )
 
     def test_create_graph(self):
         response = self.client.post(self.create_url, self.valid_payload)
@@ -30,6 +57,20 @@ class GraphAPITest(TestCase):
         data = self.valid_payload | {"name": ""}
         response = self.client.post(self.create_url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_graph_internal_server_error(self):
+        with patch(
+            "dm_backend.src.serializers.graph.GraphSerializer.save"
+        ) as mock_query:
+            mock_query.side_effect = Exception("Something went wrong")
+            response = self.client.post(self.create_url, self.valid_payload)
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            self.assertEqual(
+                response.data,
+                {"detail": "Internal server error - Something went wrong"},
+            )
 
     def test_update_graph(self):
         graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
@@ -50,6 +91,22 @@ class GraphAPITest(TestCase):
         response = self.client.put(self.update_url(graph.id), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_update_graph_internal_server_error(self):
+        graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
+        data = self.valid_payload | {"name": "updated_graph"}
+        with patch(
+            "dm_backend.src.serializers.graph.GraphSerializer.save"
+        ) as mock_query:
+            mock_query.side_effect = Exception("Something went wrong")
+            response = self.client.put(self.update_url(graph.id), data)
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            self.assertEqual(
+                response.data,
+                {"detail": "Internal server error - Something went wrong"},
+            )
+
     def test_delete_graph(self):
         graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
         response = self.client.delete(self.delete_url(graph.id))
@@ -60,3 +117,16 @@ class GraphAPITest(TestCase):
         response = self.client.delete(self.delete_url(999))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue("does not exist" in response.json()["detail"])
+
+    def test_delete_graph_internal_server_error(self):
+        graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
+        with patch("dm_backend.src.views.graph.Graph.delete") as mock_query:
+            mock_query.side_effect = Exception("Something went wrong")
+            response = self.client.delete(self.delete_url(graph.id))
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            self.assertEqual(
+                response.data,
+                {"detail": "Internal server error - Something went wrong"},
+            )
