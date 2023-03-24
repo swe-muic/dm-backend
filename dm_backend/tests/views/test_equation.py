@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -10,6 +12,7 @@ from dm_backend.tests.baker_recipes.graph_baker_recipe import graph_recipe
 class EquationAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
+        self.get_url = "/api/equations/"
         self.create_url = "/api/equations/"
         self.update_url = lambda equation_id: f"/api/equations/{equation_id}/"
         self.delete_url = lambda equation_id: f"/api/equations/{equation_id}/"
@@ -22,6 +25,30 @@ class EquationAPITest(TestCase):
             "line_width": 1,
             "graph": self.graph.id,
         }
+
+    def test_get_equations_empty(self):
+        response = self.client.get(self.get_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    def test_get_equations(self):
+        equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
+        response = self.client.get(self.get_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["id"], equation.id)
+
+    def test_get_equations_internal_server_error(self):
+        with patch("dm_backend.src.views.equation.Equation.objects.all") as mock_query:
+            mock_query.side_effect = Exception("Something went wrong")
+            response = self.client.get(self.get_url)
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            self.assertEqual(
+                response.data,
+                {"detail": "Internal server error - Something went wrong"},
+            )
 
     def test_create_equation(self):
         response = self.client.post(self.create_url, self.valid_payload)
