@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 
 from .src.views.equation import EquationAPI
+from .src.views.graph import GraphAPI
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -24,5 +25,10 @@ urlpatterns = [
     path(
         "api/equations/<int:equation_id>/",
         EquationAPI.as_view(http_method_names=["put", "delete"]),
+    ),
+    path("api/graphs/", GraphAPI.as_view(http_method_names=["post"])),
+    path(
+        "api/graphs/<int:graph_id>/",
+        GraphAPI.as_view(http_method_names=["put", "delete"]),
     ),
 ]

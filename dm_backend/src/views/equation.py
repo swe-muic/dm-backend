@@ -1,10 +1,11 @@
 """
 EquationAPI is a view that creates a new equation with the specified data.
 
-The view accepts POST and PUT requests with equation data in the request body.
+The view accepts POST, PUT and DELETE requests with equation data in the request body.
 - With POST request, the equation data is validated using the EquationSerializer, and if valid, a new equation object is
   created and saved to the database.
 - With PUT request, the equation with the specified equation_id will be updated according to the new equation data.
+- With DELETE request, the equation with the specified equation_id will be deleted from the database.
 """
 
 from rest_framework import status
