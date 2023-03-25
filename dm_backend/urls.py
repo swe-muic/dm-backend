@@ -24,7 +24,7 @@ urlpatterns = [
     path("api/equations/", EquationAPI.as_view(http_method_names=["get", "post"])),
     path(
         "api/equations/<int:equation_id>/",
-        EquationAPI.as_view(http_method_names=["put", "delete"]),
+        EquationAPI.as_view(http_method_names=["get", "put", "delete"]),
     ),
     path("api/graphs/", GraphAPI.as_view(http_method_names=["get", "post"])),
     path(

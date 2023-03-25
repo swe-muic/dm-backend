@@ -22,7 +22,7 @@ from ..serializers.equation import EquationSerializer
 class EquationAPI(APIView):
     """A class used to represent a view for equation."""
 
-    def get(self, request: Request) -> Response:
+    def get_all(self, request: Request) -> Response:
         """
         Fetch all equations and return a JSON response with http status.
 
@@ -36,6 +36,34 @@ class EquationAPI(APIView):
             equations = Equation.objects.all()
             serializer = EquationSerializer(equations, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"detail": f"Internal server error - {e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    def get(self, request: Request, equation_id: int = None) -> Response:
+        """
+        Fetch a single equation if the equation_id is specified; otherwise, fetch all equations, and return a JSON response with http status.
+
+        Args:
+            request (Request): A request containing the equation data.
+            equation_id (int): The id of an existing equation.
+
+        Returns:
+            Response: A Response object containing a single equation or details for error.
+        """
+        if equation_id is None:
+            return self.get_all(request)
+        try:
+            equation = Equation.objects.get(id=equation_id)
+            serializer = EquationSerializer(equation)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Equation.DoesNotExist:
+            return Response(
+                {"detail": f"Equation with id {equation_id} does not exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         except Exception as e:
             return Response(
                 {"detail": f"Internal server error - {e}"},
