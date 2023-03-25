@@ -22,7 +22,7 @@ from ..serializers.graph import GraphSerializer
 class GraphAPI(APIView):
     """A class used to represent a view for graph."""
 
-    def get(self, request: Request) -> Response:
+    def get_all(self, request: Request) -> Response:
         """
         Fetch all graphs and return a JSON response with http status.
 
@@ -36,6 +36,34 @@ class GraphAPI(APIView):
             graphs = Graph.objects.all()
             serializer = GraphSerializer(graphs, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"detail": f"Internal server error - {e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+    def get(self, request: Request, graph_id: int = None) -> Response:
+        """
+        Fetch a single graph if the graph_id is specified; otherwise, fetch all graphs, and return a JSON response with http status.
+
+        Args:
+            request (Request): A request containing the graph data.
+            graph_id (int): The id of an existing graph.
+
+        Returns:
+            Response: A Response object containing a single graph or details for error.
+        """
+        if graph_id is None:
+            return self.get_all(request)
+        try:
+            graph = Graph.objects.get(id=graph_id)
+            serializer = GraphSerializer(graph)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Graph.DoesNotExist:
+            return Response(
+                {"detail": f"Graph with id {graph_id} does not exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         except Exception as e:
             return Response(
                 {"detail": f"Internal server error - {e}"},

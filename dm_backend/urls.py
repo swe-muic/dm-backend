@@ -29,6 +29,6 @@ urlpatterns = [
     path("api/graphs/", GraphAPI.as_view(http_method_names=["get", "post"])),
     path(
         "api/graphs/<int:graph_id>/",
-        GraphAPI.as_view(http_method_names=["put", "delete"]),
+        GraphAPI.as_view(http_method_names=["get", "put", "delete"]),
     ),
 ]
