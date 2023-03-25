@@ -12,8 +12,9 @@ from dm_backend.tests.baker_recipes.user_baker_recipe import user_recipe
 class GraphAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.get_url = "/api/graphs/"
+        self.get_all_url = "/api/graphs/"
         self.create_url = "/api/graphs/"
+        self.get_url = lambda graph_id: f"/api/graphs/{graph_id}/"
         self.update_url = lambda graph_id: f"/api/graphs/{graph_id}/"
         self.delete_url = lambda graph_id: f"/api/graphs/{graph_id}/"
         self.owner = user_recipe.make(username="test_user")
@@ -22,22 +23,46 @@ class GraphAPITest(TestCase):
             "owner": self.owner.id,
         }
 
-    def test_get_graphs_empty(self):
-        response = self.client.get(self.get_url)
+    def test_get_all_graphs_empty(self):
+        response = self.client.get(self.get_all_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)
 
-    def test_get_graphs(self):
+    def test_get_all_graphs(self):
         graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
-        response = self.client.get(self.get_url)
+        response = self.client.get(self.get_all_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["id"], graph.id)
 
-    def test_get_graphs_internal_server_error(self):
+    def test_get_all_graphs_internal_server_error(self):
         with patch("dm_backend.src.views.graph.Graph.objects.all") as mock_query:
             mock_query.side_effect = Exception("Something went wrong")
-            response = self.client.get(self.get_url)
+            response = self.client.get(self.get_all_url)
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            self.assertEqual(
+                response.data,
+                {"detail": "Internal server error - Something went wrong"},
+            )
+
+    def test_get_graph(self):
+        graph = graph_recipe.make(**(self.valid_payload | {"owner": self.owner}))
+        response = self.client.put(self.get_url(graph.id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], graph.name)
+
+    def test_get_nonexistent_graph(self):
+        response = self.client.put(self.get_url(999))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue("does not exist" in response.json()["detail"])
+
+    def test_get_graphs_internal_server_error(self):
+        graph = graph_recipe.make(**(self.valid_payload | {"owner": self.owner}))
+        with patch("dm_backend.src.views.graph.Graph.objects.get") as mock_query:
+            mock_query.side_effect = Exception("Something went wrong")
+            response = self.client.get(self.get_url(graph.id))
             self.assertEqual(
                 response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
             )
