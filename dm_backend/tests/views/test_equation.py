@@ -12,8 +12,9 @@ from dm_backend.tests.baker_recipes.graph_baker_recipe import graph_recipe
 class EquationAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.get_url = "/api/equations/"
+        self.get_all_url = "/api/equations/"
         self.create_url = "/api/equations/"
+        self.get_url = lambda equation_id: f"/api/equations/{equation_id}/"
         self.update_url = lambda equation_id: f"/api/equations/{equation_id}/"
         self.delete_url = lambda equation_id: f"/api/equations/{equation_id}/"
         self.graph = graph_recipe.make(name="test_graph")
@@ -26,22 +27,46 @@ class EquationAPITest(TestCase):
             "graph": self.graph.id,
         }
 
-    def test_get_equations_empty(self):
-        response = self.client.get(self.get_url)
+    def test_get_all_equations_empty(self):
+        response = self.client.get(self.get_all_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)
 
-    def test_get_equations(self):
+    def test_get_all_equations(self):
         equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
-        response = self.client.get(self.get_url)
+        response = self.client.get(self.get_all_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["id"], equation.id)
 
-    def test_get_equations_internal_server_error(self):
+    def test_get_all_equations_internal_server_error(self):
         with patch("dm_backend.src.views.equation.Equation.objects.all") as mock_query:
             mock_query.side_effect = Exception("Something went wrong")
-            response = self.client.get(self.get_url)
+            response = self.client.get(self.get_all_url)
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            self.assertEqual(
+                response.data,
+                {"detail": "Internal server error - Something went wrong"},
+            )
+
+    def test_get_equation(self):
+        equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
+        response = self.client.put(self.get_url(equation.id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["equation"], equation.equation)
+
+    def test_get_nonexistent_equation(self):
+        response = self.client.put(self.get_url(999))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue("does not exist" in response.json()["detail"])
+
+    def test_get_equations_internal_server_error(self):
+        equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
+        with patch("dm_backend.src.views.equation.Equation.objects.get") as mock_query:
+            mock_query.side_effect = Exception("Something went wrong")
+            response = self.client.get(self.get_url(equation.id))
             self.assertEqual(
                 response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
             )
@@ -88,6 +113,7 @@ class EquationAPITest(TestCase):
         data = self.valid_payload | {"equation": "3x - 5 = 0"}
         response = self.client.put(self.update_url(999), data)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue("does not exist" in response.json()["detail"])
 
     def test_update_invalid_equation(self):
         equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
