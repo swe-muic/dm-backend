@@ -44,7 +44,9 @@ class GraphAPI(APIView):
 
     def get(self, request: Request, graph_id: int = None) -> Response:
         """
-        Fetch a single graph if the graph_id is specified; otherwise, fetch all graphs, and return a JSON response with http status.
+        Fetch a single graph if the graph_id is specified; otherwise, fetch all graphs.
+
+        And return a JSON response with http status.
 
         Args:
             request (Request): A request containing the graph data.
