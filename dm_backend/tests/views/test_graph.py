@@ -49,12 +49,12 @@ class GraphAPITest(TestCase):
 
     def test_get_graph(self):
         graph = graph_recipe.make(**(self.valid_payload | {"owner": self.owner}))
-        response = self.client.put(self.get_url(graph.id))
+        response = self.client.get(self.get_url(graph.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], graph.name)
 
     def test_get_nonexistent_graph(self):
-        response = self.client.put(self.get_url(999))
+        response = self.client.get(self.get_url(999))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue("does not exist" in response.json()["detail"])
 

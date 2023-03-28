@@ -44,7 +44,9 @@ class EquationAPI(APIView):
 
     def get(self, request: Request, equation_id: int = None) -> Response:
         """
-        Fetch a single equation if the equation_id is specified; otherwise, fetch all equations, and return a JSON response with http status.
+        Fetch a single equation if the equation_id is specified; otherwise, fetch all equations.
+
+        And return a JSON response with http status.
 
         Args:
             request (Request): A request containing the equation data.

@@ -53,12 +53,12 @@ class EquationAPITest(TestCase):
 
     def test_get_equation(self):
         equation = equation_recipe.make(**(self.valid_payload | {"graph": self.graph}))
-        response = self.client.put(self.get_url(equation.id))
+        response = self.client.get(self.get_url(equation.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["equation"], equation.equation)
 
     def test_get_nonexistent_equation(self):
-        response = self.client.put(self.get_url(999))
+        response = self.client.get(self.get_url(999))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue("does not exist" in response.json()["detail"])
 

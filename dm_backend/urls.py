@@ -17,10 +17,12 @@ from django.contrib import admin
 from django.urls import path
 
 from .src.views.equation import EquationAPI
+from .src.views.equation_parser import EquationParserAPI
 from .src.views.graph import GraphAPI
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/equations/parser/", EquationParserAPI.as_view(http_method_names=["get"])),
     path("api/equations/", EquationAPI.as_view(http_method_names=["get", "post"])),
     path(
         "api/equations/<int:equation_id>/",
