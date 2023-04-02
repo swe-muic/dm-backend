@@ -220,7 +220,7 @@ testing = ["covdefaults (>=2.3)", "coverage (>=7.2.2)", "diff-cover (>=7.5)", "p
 name = "gunicorn"
 version = "20.1.0"
 description = "WSGI HTTP Server for UNIX"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -731,4 +731,8 @@ test = ["covdefaults (>=2.2.2)", "coverage (>=7.1)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
+<<<<<<< HEAD
 content-hash = "76c63e2bbb71bed3de0675d37173a000e49d062b40f65a2bf73f2c8016b70310"
+=======
+content-hash = "4105abb0f744a6ba744966707bd7ba061262f65d8c35e812ca321a43977fbbce"
+>>>>>>> update poetry.lock
