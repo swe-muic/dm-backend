@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
 
-python manage.py migrate
+poetry run python manage.py migrate
 
 exec "$@"

@@ -7,8 +7,7 @@ ENV POETRY_VERSION=1.4.0 \
     PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
     PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=false
+    PYTHONDONTWRITEBYTECODE=1,
 
 # Speeds up installation of Python packages
 RUN apt-get update \
@@ -28,4 +27,4 @@ RUN poetry install \
     && chmod +x manage.py entrypoint.sh
 
 EXPOSE 8000
-ENTRYPOINT [ "./entrypoint.sh", "gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "dm_backend.asgi:application", "--timeout", "600", "--preload"]
+ENTRYPOINT [ "./entrypoint.sh", "poetry", "run", "gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "dm_backend.asgi:application", "--timeout", "600", "--preload"]
