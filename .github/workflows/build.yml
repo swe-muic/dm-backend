@@ -4,7 +4,7 @@ on: [ push ]
 
 env:
   PYTHON_VERSION: "3.9.10"
-  POETRY_VERSION: "1.2.0"
+  POETRY_VERSION: "1.4.1"
   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
   POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
