@@ -25,7 +25,7 @@ class EquationParserAPIViewSet(ViewSet):
     @action(detail=False, methods=["post"])
     def parse_equation(self, request: Request) -> Response:
         """
-        Handle HTTP GET requests to parse and simplify a LaTeX expression.
+        Parse and simplify the LaTeX expression of an equation.
 
         Args:
             request (Request): The HTTP request object.
