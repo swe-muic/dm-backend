@@ -19,18 +19,14 @@ from rest_framework import routers
 
 from .src.views.equation import EquationAPIViewSet
 from .src.views.equation_parser import EquationParserAPI
-from .src.views.graph import GraphAPI
+from .src.views.graph import GraphAPIViewSet
 
 router = routers.DefaultRouter()
 router.register(r"api/viewset/equations", EquationAPIViewSet)
+router.register(r"api/viewset/graphs", GraphAPIViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include(router.urls)),
     path("api/equations/parser/", EquationParserAPI.as_view(http_method_names=["get"])),
-    path("api/graphs/", GraphAPI.as_view(http_method_names=["get", "post"])),
-    path(
-        "api/graphs/<int:graph_id>/",
-        GraphAPI.as_view(http_method_names=["get", "put", "delete"]),
-    ),
 ]
