@@ -8,18 +8,24 @@ The view accepts GET requests with equation data in the query parameters.
 
 from latexvm.expression import Expression
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from sympy.parsing.latex import LaTeXParsingError
 
+from ..services.api_renderer import APIRenderer
 
-class EquationParserAPI(APIView):
+
+class EquationParserAPIViewSet(ViewSet):
     """A class used to represent a view for equation parser."""
 
-    def get(self, request: Request) -> Response:
+    renderer_classes = [APIRenderer]
+
+    @action(detail=False, methods=["post"])
+    def parse_equation(self, request: Request) -> Response:
         """
-        Handle HTTP GET requests to simplify a LaTeX expression.
+        Handle HTTP GET requests to parse and simplify a LaTeX expression.
 
         Args:
             request (Request): The HTTP request object.
@@ -28,12 +34,12 @@ class EquationParserAPI(APIView):
             Response: A JSON response containing the original and parsed LaTeX expression,
                 or an error response if there was a problem with the input or server.
         """
-        data = {}
         try:
-            data["equation"] = request.query_params.get("equation")
-            data["parsed_equation"] = Expression.simplify_latex_expression(
-                data["equation"]
-            )
+            equation = request.data["equation"]
+            data = {
+                "equation": equation,
+                "parsed_equation": Expression.simplify_latex_expression(equation),
+            }
             return Response(data, status=status.HTTP_200_OK)
         except LaTeXParsingError as e:
             return Response(
