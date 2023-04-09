@@ -51,7 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
+                $ref: '#/components/schemas/EquationValidationErrorResponse'
 
 
   /api/viewset/equations/{equation_id}:
@@ -97,7 +97,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
+                $ref: '#/components/schemas/EquationValidationErrorResponse'
         '404':
           description: 'NOT FOUND'
           content:
@@ -130,6 +130,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundErrorResponse'
+
+  /api/viewset/equations/parser/parse_equaton/:
+    post:
+      tags:
+        - equations-parser
+      summary: Parse an equation
+      description: Parse and simplify the LaTeX expression of an equation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                equation:
+                  type: string
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      equation:
+                        type: string
+                      parsed_equation:
+                        type: string
+        '400':
+          description: 'BAD REQUEST'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: LaTeX parsing error
+        '500':
+          description: 'INTERNAL SERVER ERROR'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: Internal server error
 
   /api/viewset/graphs/:
     get:
@@ -167,7 +240,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
+                $ref: '#/components/schemas/GraphValidationErrorResponse'
 
   /api/viewset/graph/{graph_id}:
     get:
@@ -212,7 +285,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
+                $ref: '#/components/schemas/GraphValidationErrorResponse'
         '404':
           description: 'NOT FOUND'
           content:
@@ -337,7 +410,7 @@ components:
             detail:
               type: string
               example: Not Found
-    ValidationErrorResponse:
+    EquationValidationErrorResponse:
       type: object
       properties:
         status:
@@ -370,6 +443,28 @@ components:
                 type: string
                 example: This field may not be blank.
             graph:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+    GraphValidationErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: fail
+        data:
+          type: object
+          properties:
+            name:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+            owner:
               type: array
               items:
                 type: string
