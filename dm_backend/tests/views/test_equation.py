@@ -7,7 +7,7 @@ from dm_backend.tests.baker_recipes.equation_baker_recipe import equation_recipe
 from dm_backend.tests.baker_recipes.graph_baker_recipe import graph_recipe
 
 
-class EquationAPITest(TestCase):
+class EquationAPIViewSetTest(TestCase):
     def setUp(self) -> None:
         self.client = APIClient()
         self.url = "/api/viewset/equations/"

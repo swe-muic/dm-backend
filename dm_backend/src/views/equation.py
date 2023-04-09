@@ -1,5 +1,5 @@
 """
-EquationAPI is a view that creates a new equation with the specified data.
+EquationAPIViewSet is a view that creates a new equation with the specified data.
 
 The view accepts GET, POST, PUT and DELETE requests with equation data in the request body.
 - With GET request, all the equations in the database are fetched and returned as a list of equation objects.
