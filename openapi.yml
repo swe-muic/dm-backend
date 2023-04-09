@@ -33,6 +33,12 @@ paths:
         - equations
       summary: Create a new equation
       description: Create a new equation and return JSON response with http status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Equation'
       responses:
         '201':
           description: 'CREATED'
@@ -73,6 +79,12 @@ paths:
         - equations
       summary: Update an existing equation
       description: Update an existing equation with the specified equation_id and return JSON response with http status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Equation'
       responses:
         '200':
           description: 'OK'
@@ -119,6 +131,121 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundErrorResponse'
 
+  /api/viewset/graphs/:
+    get:
+      tags:
+        - graphs
+      summary: Fetch all graphs
+      description: Fetch all graphs and return a JSON response with http status.
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphListResponse'
+    post:
+      tags:
+        - graphs
+      summary: Create a new graph
+      description: Create a new graph and return JSON response with http status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Graph'
+      responses:
+        '201':
+          description: 'CREATED'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphDetailResponse'
+        '400':
+          description: 'BAD REQUEST'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /api/viewset/graph/{graph_id}:
+    get:
+      tags:
+        - graphs
+      summary: Fetch a graph
+      description: Fetch a single graph if the graph_id is specified; otherwise, fetch all graphs.
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphDetailResponse'
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
+    put:
+      tags:
+        - graphs
+      summary: Update an existing graph
+      description: Update an existing graph with the specified graph_id and return JSON response with http status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Graph'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphDetailResponse'
+        '400':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
+    delete:
+      tags:
+        - graphs
+      summary: Delete an existing graph
+      description: Delete an existing graph with the specified graph_id and return JSON response with http status.
+      responses:
+        '204':
+          description: 'NO CONTENT'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    example: null
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
 components:
   schemas:
     Equation:
@@ -138,6 +265,23 @@ components:
           type: integer
         graph:
           type: integer
+    Graph:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        preview:
+          type: string
+        owner:
+          type: integer
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
     EquationListResponse:
       type: object
       properties:
@@ -158,6 +302,26 @@ components:
           type: string
         data:
           $ref: '#/components/schemas/Equation'
+    GraphListResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Graph'
+    GraphDetailResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Graph'
     NotFoundErrorResponse:
       type: object
       properties:
