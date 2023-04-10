@@ -152,12 +152,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundErrorResponse'
 
-  /api/viewset/equations/parser/parse_equaton/:
+  /api/viewset/equations/parser/parse_expressions/:
     post:
       tags:
         - equations-parser
-      summary: Parse an equation
-      description: Parse and simplify the LaTeX expression of an equation.
+      summary: Parse a given list expressions
+      description: Resolve and parse a given list of a mathematical expressions containing a function call.
       requestBody:
         required: true
         content:
@@ -165,9 +165,11 @@ paths:
             schema:
               type: object
               properties:
-                equation:
-                  type: string
-                  example: "x + x = 0"
+                expressions:
+                  type: array
+                  items:
+                    type: string
+                  example: ["h(x) = x*2", "f(x) = x*(h(x))", "f(3)"]
       responses:
         '200':
           description: 'OK'
@@ -185,12 +187,16 @@ paths:
                   data:
                     type: object
                     properties:
-                      equation:
-                        type: string
-                        example: x + x = 0
-                      parsed_equation:
-                        type: string
-                        example: x = 0
+                      expressions:
+                        type: array
+                        items:
+                          type: string
+                        example: ["h(x) = x*2", "f(x) = x*(h(x))", "f(3)"]
+                      parsed_expressions:
+                        type: object
+                        items:
+                          type: string
+                        example: ["h(x) = x*2", "f(x) = x*(x*2)", "18"]
         '400':
           description: 'BAD REQUEST'
           content:
