@@ -1,3 +1,6 @@
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=swe-muic_dm-backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=swe-muic_dm-backend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=swe-muic_dm-backend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=swe-muic_dm-backend)
+
 # Deezmoz: Online Graphing Calculator [Backend]
 
 MUIC ICCS372 Software Engineering
@@ -141,24 +144,24 @@ POST 	/api/viewset/equations/
 
 Get an existing equation
 ```
-GET 	/api/viewset/equations/{equation_id}
+GET 	/api/viewset/equations/{equation_id}/
 ```
 
 Update an existing equation
 ```
-PUT 	/api/viewset/equations/{equation_id}
+PUT 	/api/viewset/equations/{equation_id}/
 ```
 
 Delete an existing equation
 ```
-DELETE 	/api/viewset/equations/{equation_id}
+DELETE 	/api/viewset/equations/{equation_id}/
 ```
 
 ### Equation Parser
 
 Parse a given list expressions
 ```
-POST /api/viewset/equations/parser/parse_expressions
+POST /api/viewset/equations/parser/parse_expressions/
 ```
 
 ### Graphs
@@ -175,17 +178,17 @@ POST 	/api/viewset/graphs/
 
 Get an existing graph
 ```
-GET 	/api/viewset/graphs/{graph_id}
+GET 	/api/viewset/graphs/{graph_id}/
 ```
 
 Update an existing graph
 ```
-PUT 	/api/viewset/graphs/{graph_id}
+PUT 	/api/viewset/graphs/{graph_id}/
 ```
 
 Delete an existing graph
 ```
-DELETE 	/api/viewset/graphs/{graph_id}
+DELETE 	/api/viewset/graphs/{graph_id}/
 ```
 
 For more information, please checkout the `openapi.yml`.
