@@ -36,6 +36,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["deezmos.azurewebsites.net"]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 # Application definition
 
 INSTALLED_APPS = [
