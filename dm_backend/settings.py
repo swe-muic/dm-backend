@@ -34,9 +34,7 @@ SECRET_KEY = "django-insecure-go1=i_g&5gj_mn26h(ce5l*zg*(k@-**32awhyqoy18d-@d&%z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = ["deezmos.azurewebsites.net"]
 
 # Application definition
 
