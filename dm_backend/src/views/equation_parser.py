@@ -44,10 +44,7 @@ class EquationParserAPIViewSet(ViewSet):
             graph_session.add_sub_rule(r"\*\*", "^")
             parsed_expressions = []
             for expression in expressions:
-                simplified_expression = graph_session.execute(expression).message
-                parsed_expression = graph_session.force_resolve_function(
-                    simplified_expression
-                )
+                parsed_expression = graph_session.force_resolve_function(expression)
                 if parsed_expression.result == ResultType.FAILURE:
                     raise LaTeXParsingError(f"{expression} is invalid")
                 parsed_expressions.append(parsed_expression.message)

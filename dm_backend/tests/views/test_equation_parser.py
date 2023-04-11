@@ -15,15 +15,14 @@ class EquationAPITest(TestCase):
         test_cases = [
             ["y(x) = x / 2"],
             ["x = 2", "x ^ x"],
-            ["h(x) = x*2", "f(x) = x*(h(x))", "f(3)", "what = f(3)*2", "what"],
+            ["double(x) = x*(2)"],
         ]
         for i, test_case in enumerate(test_cases):
             graph_session = GraphSession.new()
             expected_output = []
             for expression in test_case:
-                simplified_expression = graph_session.execute(expression).message
                 parsed_expression = graph_session.force_resolve_function(
-                    simplified_expression
+                    expression
                 ).message
                 expected_output.append(parsed_expression)
             with self.subTest(
@@ -39,7 +38,7 @@ class EquationAPITest(TestCase):
 
     def test_get_latex_parsing_error(self):
         test_cases = [
-            ["y = \frac{x}{2}"],
+            ["\frac{2}{3} + g(\frac{2}{3})"],
             ["x = 2", "$x ^ x"],
             ["2$x$ + 3 = 0"],
         ]
