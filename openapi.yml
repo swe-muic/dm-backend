@@ -1,0 +1,584 @@
+openapi: '3.0.2'
+
+info:
+  title: Deezmos API
+  description: APIs for online graphing calculator
+  version: '1.0'
+
+tags:
+  - name: equations
+    description: Every APIs for equations
+  - name: equations-parser
+    description: Every APIs for parsing equations
+  - name: graphs
+    description: Every APIs for graphs
+
+paths:
+
+  /api/viewset/equations/:
+    get:
+      tags:
+        - equations
+      summary: Fetch all equations
+      description: Fetch all equations and return a JSON response with http status.
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquationListResponse'
+    post:
+      tags:
+        - equations
+      summary: Create a new equation
+      description: Create a new equation and return JSON response with http status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquationRequest'
+      responses:
+        '201':
+          description: 'CREATED'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquationDetailResponse'
+              example:
+                status: 201
+                message: success
+                data:
+                  id: 1
+                  equation: "x + x = 0"
+                  parsed_equation: "x = 0"
+                  color: 1
+                  line_style: --
+                  line_width: 1
+                  graph: 1
+        '400':
+          description: 'BAD REQUEST'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquationValidationErrorResponse'
+
+
+  /api/viewset/equations/{equation_id}:
+    parameters:
+      - in: path
+        name: equation_id
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: The equation ID
+    get:
+      tags:
+        - equations
+      summary: Fetch an equation
+      description: Fetch a single equation if the equation_id is specified; otherwise, fetch all equations.
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquationDetailResponse'
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
+    put:
+      tags:
+        - equations
+      summary: Update an existing equation
+      description: Update an existing equation with the specified equation_id and return JSON response with http status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquationRequest'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquationDetailResponse'
+        '400':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EquationValidationErrorResponse'
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
+    delete:
+      tags:
+        - equations
+      summary: Delete an existing equation
+      description: Delete an existing equation with the specified equation_id and return JSON response with http status.
+      responses:
+        '204':
+          description: 'NO CONTENT'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    example: null
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
+  /api/viewset/equations/parser/parse_expressions/:
+    post:
+      tags:
+        - equations-parser
+      summary: Parse a given list expressions
+      description: Resolve and parse a given list of a mathematical expressions containing a function call.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                expressions:
+                  type: array
+                  items:
+                    type: string
+                  example: ["h(x) = x*2", "f(x) = x*(h(x))", "f(3)"]
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      expressions:
+                        type: array
+                        items:
+                          type: string
+                        example: ["h(x) = x*2", "f(x) = x*(h(x))", "f(3)"]
+                      parsed_expressions:
+                        type: object
+                        items:
+                          type: string
+                        example: ["h(x) = x*2", "f(x) = x*(x*2)", "18"]
+        '400':
+          description: 'BAD REQUEST'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: LaTeX parsing error
+        '500':
+          description: 'INTERNAL SERVER ERROR'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      detail:
+                        type: string
+                        example: Internal server error
+
+  /api/viewset/graphs/:
+    get:
+      tags:
+        - graphs
+      summary: Fetch all graphs
+      description: Fetch all graphs and return a JSON response with http status.
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphListResponse'
+    post:
+      tags:
+        - graphs
+      summary: Create a new graph
+      description: Create a new graph and return JSON response with http status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphRequest'
+      responses:
+        '201':
+          description: 'CREATED'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphDetailResponse'
+              example:
+                status: 201
+                message: success
+                data:
+                  id: 1
+                  name: sample_graph
+                  preview: minio_bucket_name
+                  owner: 1
+                  created: 2023-04-10T03:26:01.437Z
+                  updated: 2023-04-10T03:26:01.437Z
+        '400':
+          description: 'BAD REQUEST'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphValidationErrorResponse'
+
+  /api/viewset/graph/{graph_id}:
+    parameters:
+      - in: path
+        name: graph_id
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+        description: The graph ID
+    get:
+      tags:
+        - graphs
+      summary: Fetch a graph
+      description: Fetch a single graph if the graph_id is specified; otherwise, fetch all graphs.
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphDetailResponse'
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
+    put:
+      tags:
+        - graphs
+      summary: Update an existing graph
+      description: Update an existing graph with the specified graph_id and return JSON response with http status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GraphRequest'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphDetailResponse'
+        '400':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphValidationErrorResponse'
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
+    delete:
+      tags:
+        - graphs
+      summary: Delete an existing graph
+      description: Delete an existing graph with the specified graph_id and return JSON response with http status.
+      responses:
+        '204':
+          description: 'NO CONTENT'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: integer
+                    example: 204
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    example: null
+        '404':
+          description: 'NOT FOUND'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundErrorResponse'
+
+components:
+  schemas:
+    Equation:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        equation:
+          type: string
+          example: x + x = 0
+        parsed_equation:
+          type: string
+          example: x = 0
+        color:
+          type: integer
+          example: 1
+        line_style:
+          type: string
+          example: --
+        line_width:
+          type: integer
+          example: 1
+        graph:
+          type: integer
+          example: 1
+    Graph:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: sample_graph
+        preview:
+          type: string
+          example: minio_bucket_name
+        owner:
+          type: integer
+          example: 1
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+    EquationRequest:
+      type: object
+      properties:
+        equation:
+          type: string
+          example: x + x = 0
+        parsed_equation:
+          type: string
+          example: x = 0
+        color:
+          type: integer
+          example: 1
+        line_style:
+          type: string
+          example: --
+        line_width:
+          type: integer
+          example: 1
+        graph:
+          type: integer
+          example: 1
+    GraphRequest:
+      type: object
+      required: [name, owner]
+      properties:
+        name:
+          type: string
+          example: sample_graph
+        preview:
+          type: string
+          example: minio_bucket_name
+        owner:
+          type: integer
+          example: 1
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+    EquationListResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Equation'
+    EquationDetailResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/Equation'
+    GraphListResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Graph'
+    GraphDetailResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/Graph'
+    NotFoundErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: fail
+        data:
+          type: object
+          properties:
+            detail:
+              type: string
+              example: Not Found
+    EquationValidationErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: fail
+        data:
+          type: object
+          properties:
+            equation:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+            parsed_equation:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+            color:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+            line_width:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+            graph:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+          minProperties: 1
+    GraphValidationErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: fail
+        data:
+          type: object
+          properties:
+            name:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+            owner:
+              type: array
+              items:
+                type: string
+                example: This field may not be blank.
+          minProperties: 1
