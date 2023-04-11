@@ -3,7 +3,6 @@ FROM python:3.10-slim-bullseye
 WORKDIR /app
 ENV POETRY_VERSION=1.4.0 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_NO_CACHE_DIR=1 \
     PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
     PYTHONUNBUFFERED=1 \
@@ -23,8 +22,10 @@ RUN poetry install --no-root --with gunicorn \
 COPY manage.py entrypoint.sh ./
 COPY dm_backend ./dm_backend
 
+RUN pwd && ls -la
+
 RUN poetry install \
     && chmod +x manage.py entrypoint.sh
 
 EXPOSE 8000
-ENTRYPOINT [ "./entrypoint.sh", "poetry", "run", "gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "dm_backend.asgi:application", "--timeout", "600", "--preload"]
+ENTRYPOINT [ "./entrypoint.sh", "poetry", "run", "gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "dm_backend.wsgi:application", "--timeout", "600", "--preload"]
