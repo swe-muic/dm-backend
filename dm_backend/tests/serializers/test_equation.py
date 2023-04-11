@@ -11,10 +11,10 @@ class EquationSerializerTest(TestCase):
         self.update_url = lambda equation_id: f"/api/equations/{equation_id}/"
         self.graph = graph_recipe.make(name="test_graph")
         self.validated_data = {
-            "equation": "2x + 3 = 0",
-            "parsed_equation": "2x+3=0",
+            "equation": "2x+3=0",
+            "parsed_equation": "2x + 3 = 0",
             "color": 1,
-            "line_style": "-",
+            "line_style": "polyline",
             "line_width": 1,
             "graph": self.graph,
         }

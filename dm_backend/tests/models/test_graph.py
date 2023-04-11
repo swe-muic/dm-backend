@@ -1,7 +1,6 @@
 from django.test import TestCase
 
 from dm_backend.tests.baker_recipes.graph_baker_recipe import graph_recipe
-from dm_backend.tests.baker_recipes.user_baker_recipe import user_recipe
 
 
 class TestGraph(TestCase):
@@ -11,10 +10,9 @@ class TestGraph(TestCase):
         self.assertEqual(graph.name, graph_name)
 
     def test_create_graph_with_owner(self):
-        owner_name = "owner1"
-        owner = user_recipe.make(username=owner_name)
-        graph = graph_recipe.make(owner=owner)
-        self.assertEqual(graph.owner.username, owner_name)
+        owner_uid = "firebase_uid"
+        graph = graph_recipe.make(owner=owner_uid)
+        self.assertEqual(graph.owner, owner_uid)
 
     def test_create_graph_with_preview(self):
         preview = "preview_minio_bucket_name"

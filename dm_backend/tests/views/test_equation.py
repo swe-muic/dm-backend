@@ -14,10 +14,10 @@ class EquationAPIViewSetTest(TestCase):
         self.url_id = lambda equation_id: f"{self.url}{equation_id}/"
         self.graph = graph_recipe.make(name="test_graph")
         self.valid_payload = {
-            "equation": "2x + 3 = 0",
-            "parsed_equation": "2x+3=0",
+            "equation": "2x+3=0",
+            "parsed_equation": "2x + 3 = 0",
             "color": 1,
-            "line_style": "-",
+            "line_style": "polyline",
             "line_width": 1,
             "graph": self.graph.id,
         }

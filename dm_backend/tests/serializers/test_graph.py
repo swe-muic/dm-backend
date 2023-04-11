@@ -2,17 +2,15 @@ from django.test import TestCase
 
 from dm_backend.src.models.graph import Graph
 from dm_backend.src.serializers.graph import GraphSerializer
-from dm_backend.tests.baker_recipes.user_baker_recipe import user_recipe
 
 
 class GraphSerializerTest(TestCase):
     def setUp(self):
         self.create_url = "/api/graphs/"
         self.update_url = lambda graph_id: f"/api/graphs/{graph_id}/"
-        self.owner = user_recipe.make(username="test_user")
         self.validated_data = {
             "name": "test_graph",
-            "owner": self.owner,
+            "owner": "test_owner",
         }
 
     def test_create_graph(self):
