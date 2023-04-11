@@ -4,7 +4,6 @@ from rest_framework.test import APIClient
 
 from dm_backend.src.models.graph import Graph
 from dm_backend.tests.baker_recipes.graph_baker_recipe import graph_recipe
-from dm_backend.tests.baker_recipes.user_baker_recipe import user_recipe
 
 
 class GraphAPIViewSetTest(TestCase):
@@ -12,10 +11,9 @@ class GraphAPIViewSetTest(TestCase):
         self.client = APIClient()
         self.url = "/api/viewset/graphs/"
         self.url_id = lambda equation_id: f"{self.url}{equation_id}/"
-        self.owner = user_recipe.make(username="test_user")
         self.valid_payload = {
             "name": "test_graph",
-            "owner": self.owner.id,
+            "owner": "test_owner",
         }
 
     def test_get_all_graphs_empty(self):
@@ -25,7 +23,7 @@ class GraphAPIViewSetTest(TestCase):
         self.assertEqual(len(response.data), 0)
 
     def test_get_all_graphs(self):
-        graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
+        graph = graph_recipe.make(**self.valid_payload)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["message"], "success")
@@ -33,7 +31,7 @@ class GraphAPIViewSetTest(TestCase):
         self.assertEqual(response.data[0]["id"], graph.id)
 
     def test_get_graph(self):
-        graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
+        graph = graph_recipe.make(**self.valid_payload)
         response = self.client.get(self.url_id(graph.id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["message"], "success")
@@ -61,7 +59,7 @@ class GraphAPIViewSetTest(TestCase):
         self.assertEqual(Graph.objects.count(), 0)
 
     def test_update_graph(self):
-        graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
+        graph = graph_recipe.make(**self.valid_payload)
         payload = self.valid_payload | {"name": "updated_graph"}
         response = self.client.put(self.url_id(graph.id), payload)
         graph = Graph.objects.filter(id=graph.id).first()
@@ -77,7 +75,7 @@ class GraphAPIViewSetTest(TestCase):
         self.assertEqual(response.data["detail"], "Not found.")
 
     def test_update_invalid_graph(self):
-        graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
+        graph = graph_recipe.make(**self.valid_payload)
         payload = self.valid_payload | {"name": ""}
         response = self.client.put(self.url_id(graph.id), payload)
         graph = Graph.objects.filter(id=graph.id).first()
@@ -86,7 +84,7 @@ class GraphAPIViewSetTest(TestCase):
         self.assertEqual(graph.name, self.valid_payload["name"])
 
     def test_delete_graph(self):
-        graph = graph_recipe.make(**self.valid_payload | {"owner": self.owner})
+        graph = graph_recipe.make(**self.valid_payload)
         response = self.client.delete(self.url_id(graph.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Graph.objects.filter(id=graph.id).exists())
