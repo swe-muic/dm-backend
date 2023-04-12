@@ -19,18 +19,3 @@ class Graph(models.Model):
     preview = models.CharField(max_length=255, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        """
-        Meta class for Graph model.
-
-        Attributes:
-            ordering (list): The ordering of the graph.
-            constraints (list): The constraints of the graph
-                -> one owner should not have multiple graphs under the same name.
-        """
-
-        ordering = ["name"]
-        constraints = [
-            models.UniqueConstraint(fields=["name", "owner"], name="unique_graph_name")
-        ]
