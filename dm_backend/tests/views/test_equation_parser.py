@@ -21,6 +21,7 @@ class EquationAPITest(TestCase):
             graph_session = GraphSession.new()
             expected_output = []
             for expression in test_case:
+                graph_session.execute(expression)
                 parsed_expression = graph_session.force_resolve_function(
                     expression
                 ).message
