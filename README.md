@@ -1,5 +1,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=swe-muic_dm-backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=swe-muic_dm-backend)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=swe-muic_dm-backend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=swe-muic_dm-backend)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=swe-muic_dm-backend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=swe-muic_dm-backend)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=swe-muic_dm-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=swe-muic_dm-backend)
 
 # Deezmoz: Online Graphing Calculator [Backend]
 
