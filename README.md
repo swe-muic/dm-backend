@@ -100,8 +100,8 @@ Create a `.env` file following the same format of a `.env.example` file.
 POSTGRES_USER =  username
 POSTGRES_PASSWORD = password
 POSTGRES_DB = postgres_db
-MINIO_ROOT_USER = username
-MINIO_ROOT_PASSWORD = password
+MINIO_ROOT_USER = minio_username
+MINIO_ROOT_PASSWORD = minio_password
 ```
 
 <b> Note: </b> If MinIO is already set up on the frontend, then `MINIO_ROOT_USER` and `MINIO_ROOT_PASSWORD` can be omitted.
