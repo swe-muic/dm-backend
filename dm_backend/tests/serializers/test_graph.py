@@ -33,14 +33,14 @@ class GraphSerializerTest(TestCase):
     def test_create_graph(self):
         """Test that the graph instance is created correctly."""
         serializer = GraphSerializer()
-        graph = serializer.create(self.validated_data | {"name": "graph_01"})
+        graph = serializer.create(self.validated_data)
         self.assertIsInstance(graph, Graph)
-        self.assertEqual(graph.name, "graph_01")
+        self.assertEqual(graph.name, self.validated_data["name"])
         self.assertEqual(graph.owner, self.validated_data["owner"])
 
     def test_update_graph(self):
         """Test that the graph instance is updated correctly."""
-        graph = Graph.objects.create(**(self.validated_data | {"name": "graph_02"}))
+        graph = Graph.objects.create(**self.validated_data)
         serializer = GraphSerializer()
         updated_graph = serializer.update(
             graph, self.validated_data | {"name": "updated_graph"}
