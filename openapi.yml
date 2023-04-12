@@ -274,7 +274,7 @@ paths:
                   id: 1
                   name: sample_graph
                   preview: minio_bucket_name
-                  owner: 1
+                  owner: wIb7MfQ0NnbnnX3X6V0udjs7smI2
                   created: 2023-04-10T03:26:01.437Z
                   updated: 2023-04-10T03:26:01.437Z
         '400':
@@ -410,8 +410,8 @@ components:
           type: string
           example: minio_bucket_name
         owner:
-          type: integer
-          example: 1
+          type: string
+          example: wIb7MfQ0NnbnnX3X6V0udjs7smI2
         created:
           type: string
           format: date-time
@@ -450,8 +450,8 @@ components:
           type: string
           example: minio_bucket_name
         owner:
-          type: integer
-          example: 1
+          type: string
+          example: wIb7MfQ0NnbnnX3X6V0udjs7smI2
         created:
           type: string
           format: date-time
